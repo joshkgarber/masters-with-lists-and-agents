@@ -35,7 +35,7 @@ def register():
                 return redirect(url_for('auth.login')) # `url_for` generates the URL for the login view based on its name. this allows you to change the URL later without changing other code that links to it.
 
         flash(error) # `flash()` stores messages that can be retrieved when rendering the template.
-    
+
     return render_template('auth/register.html')
 
 @bp.route('/login', methods=('GET', 'POST'))

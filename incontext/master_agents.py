@@ -128,7 +128,7 @@ def get_master_agent(master_agent_id, check_access=True):
     if master_agent is None:
         abort(404)
     if check_access:
-        if master_agent['creator_id'] != g.user['id']:
+        if not g.user["admin"]:
             abort(403)
     return master_agent
 

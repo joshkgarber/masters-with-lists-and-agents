@@ -43,7 +43,7 @@ def new():
 @bp.route('/<int:master_list_id>/view')
 @login_required
 def view(master_list_id):
-    master_list = get_master_list(master_list_id)
+    master_list = get_master_list(master_list_id, False)
     return render_template('master-lists/view.html', master_list=master_list)
 
 
@@ -157,7 +157,7 @@ def new_master_item(master_list_id):
 @bp.route("<int:master_list_id>/master-items/<int:master_item_id>/view")
 @login_required
 def view_master_item(master_list_id, master_item_id):
-    master_list = get_master_list(master_list_id)
+    master_list = get_master_list(master_list_id, False)
     requested_master_item = None
     for master_item in master_list['master_items']:
         if master_item['id'] == master_item_id:
@@ -333,7 +333,7 @@ def get_master_list(master_list_id, check_access=True):
     if master_list is None:
         abort(404)
     if check_access:
-        if master_list['creator_id'] != g.user['id']:
+        if not g.user["admin"]:
             abort(403)
     master_list_ext = {}
     for key in master_list.keys():
