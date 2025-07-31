@@ -1,4 +1,4 @@
-# TODOs
+# TODO
 
 - [x] Only admin can manage master lists
 - [x] Admin can manage all admin-created master lists and master agents
