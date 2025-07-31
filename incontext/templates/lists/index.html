@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Lists{% endblock %}</h1>
+{% if lists|length == 0 %}
+<p>Empty</p>
+{% endif %}
+<p><a href="{{ url_for('lists.create') }}">New</a></p>
+{% endblock %}
+{% block main %}
+{% for alist in lists %}
+<article>
+	<h2>{{ alist['name'] }}</h2>
+	<p>{{ alist['description'] }}</p>
+	<p><b>Created: </b>{{ alist['created'].strftime('%d.%m.%Y') }} | <a href="{{ url_for('lists.view', list_id=alist['id']) }}">View</a> | <a href="{{ url_for('lists.edit', list_id=alist['id']) }}">Edit</a></p>
+	{% if not loop.last %}
+	<hr>
+	{% endif %}
+</article>
+{% endfor %}
+{% endblock %}
