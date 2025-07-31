@@ -2,4 +2,4 @@
 
 ## Deployment
 
-[ ] Deploy
+- [ ] Deploy
