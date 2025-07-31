@@ -11,7 +11,7 @@ def test_index_master_agent(app, client, auth):
     auth.login("other", "other")
     response = client.get("master-agents/")
     assert response.status_code == 403
-    # user must be master agent creator
+    # user must be admin
     auth.login("test", "test")
     response = client.get("master-agents/")
     assert response.status_code == 200
@@ -142,7 +142,8 @@ def test_edit_master_agent(app, client, auth):
     auth.login("other", "other")
     response = client.get("master-agents/1/edit")
     assert response.status_code == 403
-    auth.login()
+    # auth.login("admin2", "admin2")
+    auth.login("admin2", "admin2")
     response = client.get("master-agents/1/edit")
     assert response.status_code == 200
     # master agent data gets served
@@ -232,7 +233,7 @@ def test_delete_master_agent(client, auth, app):
     auth.login("other", "other")
     response = client.post("master-agents/1/delete")
     assert response.status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     with app.app_context():
         # master agent gets deleted
         db = get_db()

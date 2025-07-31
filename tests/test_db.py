@@ -34,7 +34,7 @@ def test_data_entry(app):
     with app.app_context():
         db = get_db()
         user_count = db.execute("SELECT COUNT(*) AS count FROM users").fetchone()["count"]
-        assert user_count == 3
+        assert user_count == 4
         master_list_count = db.execute("SELECT COUNT(*) AS count FROM master_lists").fetchone()["count"]
         assert master_list_count == 2
         master_item_count = db.execute('SELECT COUNT(*) AS count FROM master_items').fetchone()['count']

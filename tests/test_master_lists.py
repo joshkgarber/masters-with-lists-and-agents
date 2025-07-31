@@ -57,15 +57,9 @@ def test_view_master_list(app, client, auth):
     response = client.get("master-lists/1/view")
     assert response.status_code == 302
     assert response.headers["Location"] == "/auth/login"
-    # user must be admin
+    # user doesn't have to be admin or creator
     auth.login('other', 'other')
     response = client.get("master-lists/1/view")
-    assert response.status_code == 403
-    # user must be master list creator
-    auth.login("other", "other")
-    assert client.get("master-lists/1/view").status_code == 403
-    auth.login()
-    response = client.get("/master-lists/1/view")
     assert response.status_code == 200
     # master list data gets served
     assert b"master list name 1" in response.data
@@ -98,10 +92,10 @@ def test_edit_master_list(app, client, auth):
     auth.login('other', 'other')
     response = client.get("master-lists/1/edit")
     assert response.status_code == 403
-    # user must be master list creator
+    # user must be admin
     auth.login('other', 'other')
     assert client.get('master-lists/1/edit').status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.get('master-lists/1/edit')
     assert response.status_code == 200
     # master data gets served
@@ -127,7 +121,7 @@ def test_edit_master_list(app, client, auth):
     # redirected to master_lists.index
     assert response.status_code == 302
     assert response.headers["Location"] == '/master-lists/'
-    # master must exist
+    # master list must exist
     assert client.get('/master-lists/3/edit').status_code == 404
 
 
@@ -140,11 +134,11 @@ def test_delete_master_list(app, client, auth):
     auth.login('other', 'other')
     response = client.post("master-lists/1/delete")
     assert response.status_code == 403
-    # user must be master creator
+    # user must be master list creator
     auth.login("other", "other")
     assert client.post("master-lists/1/delete").status_code == 403
-    # list master gets deleted
-    auth.login()
+    # master list gets deleted
+    auth.login("admin2", "admin2")
     with app.app_context():
         db = get_db()
         master_item_count = db.execute(
@@ -242,10 +236,10 @@ def test_new_master_item(app, client, auth):
     auth.login('other', 'other')
     response = client.get("master-lists/1/master-items/new")
     assert response.status_code == 403
-    # user must be master list creator
+    # user must be admin
     auth.login('other', 'other')
     assert client.get('/master-lists/1/master-items/new').status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.get('/master-lists/1/master-items/new')
     assert response.status_code == 200
     with app.app_context():
@@ -341,14 +335,8 @@ def test_view_master_item(client, auth, app):
     response = client.get("/master-lists/1/master-items/1/view")
     assert response.status_code == 302
     assert response.headers["Location"] == "/auth/login"
-    # user must be admin
+    # user doesn't need to be admin
     auth.login("other", "other")
-    response = client.get("/master-lists/1/master-items/1/view")
-    assert response.status_code == 403
-    # user must be master list owner
-    auth.login("other", "other")
-    assert client.get("/master-lists/1/master-items/1/view").status_code == 403
-    auth.login()
     response = client.get("/master-lists/1/master-items/1/view")
     assert response.status_code == 200
     with app.app_context():
@@ -405,9 +393,9 @@ def test_edit_master_item(client, auth, app):
     assert response.headers["Location"] == "/auth/login"
     # user must be admin
     auth.login("other", "other")
-    response = client.get("master-lists/1/master-items/1/view")
+    response = client.get("master-lists/1/master-items/1/edit")
     assert response.status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.get('master-lists/1/master-items/1/edit')
     assert response.status_code == 200
     with app.app_context():
@@ -515,7 +503,7 @@ def test_delete_master_item(client, auth, app):
     auth.login("other", "other")
     response = client.post("master-lists/1/master-items/1/delete")
     assert response.status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     with app.app_context():
         db = get_db()
         master_items_before = db.execute('SELECT id, name FROM master_items').fetchall()
@@ -548,7 +536,7 @@ def test_new_master_detail(client, auth, app):
     auth.login("other", "other")
     response = client.get("master-lists/1/master-details/new")
     assert response.status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.get('/master-lists/1/master-details/new')
     assert response.status_code == 200
     # data validation
@@ -593,7 +581,7 @@ def test_edit_master_detail(client, auth, app):
     auth.login("other", "other")
     response = client.get("/master-lists/1/master-details/1/edit")
     assert response.status_code == 403
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.get("/master-lists/1/master-details/1/edit")
     assert response.status_code == 200
     # master detail must exist
@@ -642,7 +630,7 @@ def test_delete_master_detail(client, auth, app):
     response = client.post("/master-lists/1/master-details/1/delete")
     assert response.status_code == 403
     # master detail must exist
-    auth.login()
+    auth.login("admin2", "admin2")
     response = client.post("/master-lists/1/master-details/4/delete")
     assert response.status_code == 404
     with app.app_context():
