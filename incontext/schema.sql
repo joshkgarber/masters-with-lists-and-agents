@@ -41,6 +41,7 @@ CREATE TABLE master_items (
 	creator_id INTEGER NOT NULL,
 	created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	name TEXT NOT NULL,
+    position INTEGER NOT NULL,
 	FOREIGN KEY (creator_id) REFERENCES users (id)
 );
 
@@ -51,6 +52,7 @@ CREATE TABLE master_details (
 	created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	name TEXT NOT NULL,
 	description TEXT,
+    position INTEGER NOT NULL,
 	FOREIGN KEY (creator_id) REFERENCES users (id)
 );
 
@@ -97,6 +99,7 @@ CREATE TABLE items (
 	creator_id INTEGER NOT NULL,
 	created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	name TEXT NOT NULL,
+    position INTEGER NOT NULL,
 	FOREIGN KEY (creator_id) REFERENCES users (id)
 );
 
@@ -107,6 +110,7 @@ CREATE TABLE details (
 	created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	name TEXT NOT NULL,
 	description TEXT,
+    position INTEGER NOT NULL,
 	FOREIGN KEY (creator_id) REFERENCES users (id)
 );
 
