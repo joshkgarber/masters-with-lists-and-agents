@@ -48,16 +48,72 @@ def new():
 def new_tethered():
     if request.method == "POST":
         requested_master_list = get_master_list(request.form["master_list_id"], False)
-        return jsonify(requested_master_list)
+        # return jsonify(requested_master_list)
         db = get_db()
+        cur = db.cursor()
         # Get the master list name and description
+        new_list_name = requested_master_list["name"]
+        new_list_description = requested_master_list["description"]
         # Create a new list with them and retrieve the ID
-        # Get the details from the master list (name and description)
-        # Add those details to the new list
-        # Get the items from the master list
-        # Add those items to the new list
+        cur.execute(
+            'INSERT INTO lists (name, description, creator_id)'
+            ' VALUES (?, ?, ?)',
+            (new_list_name, new_list_description, g.user['id'])
+        )
+        new_list_id = cur.lastrowid
         # Record the tether
+        cur.execute(
+            "INSERT INTO list_tethers(list_id, master_list_id)"
+            " VALUES (?, ?)",
+            (new_list_id, requested_master_list["id"])
+        )
+        # Get the master details from the master list (name and description)
+        new_list_details = requested_master_list["master_details"]
+        # Add those details to the new list
+        new_list_detail_ids = []
+        for new_list_detail in new_list_details:
+            cur.execute(
+                "INSERT INTO details (name, description, creator_id)"
+                " VALUES (?, ?, ?)",
+                (new_list_detail["name"], new_list_detail["description"], g.user["id"])
+            )
+            new_list_detail_ids.append(cur.lastrowid)
+        data = [
+            [new_list_id, new_list_detail_id]
+            for new_list_detail_id in new_list_detail_ids
+        ]
+        cur.executemany(
+            'INSERT INTO list_detail_relations (list_id, detail_id)'
+            ' VALUES (?, ?)',
+            data
+        )
+        # Get the items from the master list
+        new_list_items = requested_master_list["master_items"]
+        # Add those items to the new list
+        for new_list_item in new_list_items:
+            cur.execute(
+                'INSERT INTO items (name, creator_id)'
+                ' VALUES (?, ?)',
+                (new_list_item["name"], g.user['id'])
+            )
+            new_list_item_id = cur.lastrowid
+            cur.execute(
+                'INSERT INTO list_item_relations (list_id, item_id)'
+                ' VALUES (?, ?)',
+                (new_list_id, new_list_item_id)
+            )
+            relations = []
+            for i, new_list_detail_id in enumerate(new_list_detail_ids):
+                content = new_list_item["master_contents"][i]
+                relations.append((new_list_item_id, new_list_detail_id, content))
+            cur.executemany(
+                'INSERT INTO item_detail_relations (item_id, detail_id, content)'
+                ' VALUES(?, ?, ?)',
+                relations
+            )
+        db.commit()
         # Redirect to the list's view view
+        return redirect(url_for('lists.view', list_id=new_list_id))
     master_lists = get_master_lists()
     return render_template("lists/new_tethered.html", master_lists=master_lists)
 
@@ -125,6 +181,8 @@ def delete(list_id):
     db.execute('DELETE FROM list_item_relations WHERE list_id = ?',(list_id,))
     # Delete list-detail relations
     db.execute('DELETE FROM list_detail_relations WHERE list_id = ?', (list_id,))
+    # Delete list_tethers
+    db.execute("DELETE FROM list_tethers WHERE list_id = ?", (list_id,))
     # Delete list
     db.execute('DELETE FROM lists WHERE id = ?', (list_id,))
     db.commit()
@@ -317,8 +375,10 @@ def delete_detail(list_id, detail_id):
 def get_user_lists():
     db = get_db()
     user_lists = db.execute(
-        'SELECT l.id, l.name, l.description, l.created'
+        'SELECT l.id, l.name, l.description, l.created, t.master_list_id'
         ' FROM lists l'
+        " LEFT JOIN list_tethers t"
+        " ON t.list_id = l.id"
         ' WHERE l.creator_id = ?',
         (g.user['id'],)
     ).fetchall()
@@ -327,8 +387,10 @@ def get_user_lists():
 
 def get_list(list_id, check_creator=True):
     alist = get_db().execute(
-        'SELECT l.id, l.name, l.description, l.creator_id'
+        'SELECT l.id, l.name, l.description, l.creator_id, t.master_list_id'
         ' FROM lists l'
+        " LEFT JOIN list_tethers t"
+        " ON t.list_id = l.id"
         ' WHERE l.id = ?',
         (list_id,)
     ).fetchone()

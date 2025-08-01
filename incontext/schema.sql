@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS item_detail_relations;
 DROP TABLE IF EXISTS lists;
 DROP TABLE IF EXISTS list_item_relations;
 DROP TABLE IF EXISTS list_detail_relations;
-DROP TABLE IF EXISTS master_list_tethers;
+DROP TABLE IF EXISTS list_tethers;
 DROP TABLE IF EXISTS master_agents;
 DROP TABLE IF EXISTS agents;
 DROP TABLE IF EXISTS agent_models;
