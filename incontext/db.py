@@ -6,6 +6,11 @@ import click
 from flask import current_app, g
 
 
+def dict_factory(cursor, row):
+    fields = [column[0] for column in cursor.description]
+    return {key: value for key, value in zip(fields, row)}
+
+
 def get_db():
     if 'db' not in g: # `g` is the application context global - a special object unique for each request. It is used for data that might be accessed by multiple functions during the request. This conditional ensures that for any given request there is only one connection to the database.
         g.db = sqlite3.connect( # establishes a connection to the file pointed at by the `DATABASE` configuration key. This file doesn't have to exist yet, and won't until the database is initialized. (see protocol doc).

@@ -5,8 +5,11 @@ from werkzeug.exceptions import abort
 
 from incontext.auth import login_required, admin_only
 from incontext.db import get_db
+from incontext.db import dict_factory
+
 
 bp = Blueprint('master_lists', __name__, url_prefix='/master-lists')
+
 
 @bp.route('/')
 @login_required
@@ -324,6 +327,7 @@ def get_master_lists():
 
 def get_master_list(master_list_id, check_access=True):
     db = get_db()
+    db.row_factory = dict_factory
     master_list = db.execute(
         "SELECT m.id, m.creator_id, m.created, m.name, m.description, u.username"
         " FROM master_lists m"
@@ -380,4 +384,4 @@ def get_master_list(master_list_id, check_access=True):
         master_item_id = master_content['master_item_id']
         master_item = next((master_item for master_item in master_list_ext["master_items"] if master_item["id"] == master_item_id), None)
         master_item['master_contents'].append(master_content['master_content'])
-    return master_list_ext 
+    return master_list_ext

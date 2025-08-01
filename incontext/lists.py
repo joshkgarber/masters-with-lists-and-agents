@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
 )
 from werkzeug.exceptions import abort
 
@@ -48,7 +48,16 @@ def new():
 def new_tethered():
     if request.method == "POST":
         requested_master_list = get_master_list(request.form["master_list_id"], False)
+        return jsonify(requested_master_list)
         db = get_db()
+        # Get the master list name and description
+        # Create a new list with them and retrieve the ID
+        # Get the details from the master list (name and description)
+        # Add those details to the new list
+        # Get the items from the master list
+        # Add those items to the new list
+        # Record the tether
+        # Redirect to the list's view view
     master_lists = get_master_lists()
     return render_template("lists/new_tethered.html", master_lists=master_lists)
 
