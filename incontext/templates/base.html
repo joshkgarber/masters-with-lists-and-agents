@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{% block title %}{% endblock %} - InContext</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for("static", filename="favicon/apple-touch-icon.png") }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for("static", filename="favicon/favicon-32x32.png") }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for("static", filename="favicon/favicon-16x16.png") }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Flask automatically adds a static view that takes a path relative to the `incontext/static` directory and serves it. -->
 	</head>
 	<body>
