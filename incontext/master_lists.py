@@ -318,8 +318,6 @@ def get_master_lists():
         " FROM master_lists m"
         " JOIN users u"
         " ON u.id = m.creator_id"
-        " WHERE m.creator_id = ?",
-        (g.user["id"],)
     ).fetchall()
     return master_lists
 

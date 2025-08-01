@@ -6,10 +6,12 @@ from werkzeug.exceptions import abort
 from incontext.auth import login_required
 from incontext.db import get_db
 from incontext.master_agents import get_agent_models
-from incontext.master_agents import get_master_agent
 from incontext.master_agents import get_master_agents
+from incontext.master_agents import get_master_agent
+
 
 bp = Blueprint('agents', __name__, url_prefix='/agents')
+
 
 @bp.route('/')
 @login_required

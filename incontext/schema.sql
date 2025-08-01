@@ -11,10 +11,10 @@ DROP TABLE IF EXISTS item_detail_relations;
 DROP TABLE IF EXISTS lists;
 DROP TABLE IF EXISTS list_item_relations;
 DROP TABLE IF EXISTS list_detail_relations;
+DROP TABLE IF EXISTS master_list_tethers;
 DROP TABLE IF EXISTS master_agents;
 DROP TABLE IF EXISTS agents;
 DROP TABLE IF EXISTS agent_models;
-DROP TABLE IF EXISTS master_agent_tethers;
 DROP TABLE IF EXISTS tethered_agents;
 
 
@@ -80,6 +80,15 @@ CREATE TABLE master_list_detail_relations (
 	master_detail_id INTEGER NOT NULL,
 	FOREIGN KEY (master_list_id) REFERENCES master_lists (id),
 	FOREIGN KEY (master_detail_id) REFERENCES master_details (id)
+);
+
+
+CREATE TABLE list_tethers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    list_id INTEGER NOT NULL,
+    master_list_id INTEGER NOT NULL,
+    FOREIGN KEY (list_id) REFERENCES lists (id),
+    FOREIGN KEY (master_list_id) REFERENCES master_lists (id)
 );
 
 

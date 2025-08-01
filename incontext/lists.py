@@ -5,8 +5,12 @@ from werkzeug.exceptions import abort
 
 from incontext.auth import login_required
 from incontext.db import get_db
+from incontext.master_lists import get_master_lists
+from incontext.master_lists import get_master_list
+
 
 bp = Blueprint('lists', __name__, url_prefix='/lists')
+
 
 @bp.route('/')
 @login_required
@@ -15,9 +19,9 @@ def index():
     return render_template('lists/index.html', lists=lists)
 
 
-@bp.route('/create', methods=('GET', 'POST'))
+@bp.route('/new', methods=('GET', 'POST'))
 @login_required
-def create():
+def new():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -36,7 +40,17 @@ def create():
             db.commit()
             return redirect(url_for('lists.index'))
 
-    return render_template('lists/create.html')
+    return render_template('lists/new.html')
+
+
+@bp.route("/new-tethered", methods=("GET", "POST"))
+@login_required
+def new_tethered():
+    if request.method == "POST":
+        requested_master_list = get_master_list(request.form["master_list_id"], False)
+        db = get_db()
+    master_lists = get_master_lists()
+    return render_template("lists/new_tethered.html", master_lists=master_lists)
 
 
 @bp.route('/<int:list_id>/view')
@@ -316,7 +330,7 @@ def get_list(list_id, check_creator=True):
         if list_creator_id != g.user['id']:
             abort(403)
     return alist
-    
+
 
 def get_list_items_with_details(list_id, check_creator=True):
     if check_creator:
