@@ -3,7 +3,7 @@
 {% block header %}
 <h1>{% block title %}Master List: {{ master_list['name'] }}{% endblock %}</h1>
 <p>{{ master_list['description'] }} <a href="{{ url_for('master_lists.edit', master_list_id=master_list['id']) }}">Edit</a></p>
-<p><b>Created:</b> {{ master_list['created'].strftime('%d.%m.%Y') }}</p>
+<p><b>Created on</b> {{ master_list['created'].strftime('%d.%m.%Y') }} <b>by</b> {{ master_list["username"] }}</p>
 {% endblock %}
 {% block main %}
 <section id="items">

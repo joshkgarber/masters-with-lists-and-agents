@@ -107,10 +107,12 @@ def delete(master_agent_id):
 def get_master_agents():
     db = get_db()
     master_agents = db.execute(
-        'SELECT m.id, m.created, m.name, m.description, a.model_name, m.role, m.instructions'
+        'SELECT m.id, m.created, m.name, m.description, a.model_name, m.role, m.instructions, u.username'
         ' FROM master_agents m'
         " JOIN agent_models a"
+        " JOIN users u"
         " ON a.id = m.model_id"
+        " AND u.id = m.creator_id"
     ).fetchall()
     return master_agents
 

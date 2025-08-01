@@ -314,10 +314,12 @@ def delete_master_detail(master_list_id, master_detail_id):
 def get_master_lists():
     db = get_db()
     master_lists = db.execute(
-        'SELECT m.id, m.name, m.description, m.created'
-        ' FROM master_lists m'
-        ' WHERE m.creator_id = ?',
-        (g.user['id'],)
+        "SELECT m.id, m.name, m.description, m.created, u.username"
+        " FROM master_lists m"
+        " JOIN users u"
+        " ON u.id = m.creator_id"
+        " WHERE m.creator_id = ?",
+        (g.user["id"],)
     ).fetchall()
     return master_lists
 
@@ -325,9 +327,11 @@ def get_master_lists():
 def get_master_list(master_list_id, check_access=True):
     db = get_db()
     master_list = db.execute(
-        'SELECT m.id, m.creator_id, m.created, m.name, m.description'
-        ' FROM master_lists m'
-        ' WHERE m.id = ?',
+        "SELECT m.id, m.creator_id, m.created, m.name, m.description, u.username"
+        " FROM master_lists m"
+        " JOIN users u"
+        " ON u.id = m.creator_id"
+        " WHERE m.id = ?",
         (master_list_id,)
     ).fetchone()
     if master_list is None:

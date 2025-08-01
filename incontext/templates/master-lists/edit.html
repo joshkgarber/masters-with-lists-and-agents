@@ -2,7 +2,7 @@
 
 {% block header %}
 <h1>{% block title %}Edit Master List: {{ master_list['name'] }}{% endblock %}</h1>
-<p><b>Created:</b> {{ master_list["created"].strftime("%d.%m.%Y") }}</p>
+<p><b>Created on</b> {{ master_list['created'].strftime('%d.%m.%Y') }} <b>by</b> {{ master_list["username"] }}</p>
 {% endblock %}
 	
 {% block main %}
