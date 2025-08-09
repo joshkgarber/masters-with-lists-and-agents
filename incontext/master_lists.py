@@ -141,7 +141,7 @@ def new_master_item(master_list_id):
             position = master_item_count + 1
             cur.execute(
                 'INSERT INTO master_items (name, position, creator_id)'
-                ' VALUES (?, ?)',
+                ' VALUES (?, ?, ?)',
                 (name, position, g.user['id'])
             )
             master_item_id = cur.lastrowid

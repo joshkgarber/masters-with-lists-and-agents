@@ -208,10 +208,16 @@ def new_item(list_id):
         else:
             db = get_db()
             cur = db.cursor()
+            item_count = cur.execute(
+                "SELECT COUNT(id) FROM list_item_relations"
+                " WHERE list_id = ?",
+                (list_id,)
+            ).fetchone()[0]
+            position = item_count + 1
             cur.execute(
-                'INSERT INTO items (name, creator_id)'
-                ' VALUES (?, ?)',
-                (name, g.user['id'])
+                'INSERT INTO items (name, position, creator_id)'
+                ' VALUES (?, ?, ?)',
+                (name, position, g.user['id'])
             )
             item_id = cur.lastrowid
             cur.execute(
