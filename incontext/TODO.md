@@ -5,5 +5,6 @@
 - [x] Master list and master agent views show the creator name
 - [x] You can create a (tethered) list off a master as a copy which you can edit
 - [ ] You can add to it (items and details)
+    - Now we gotta keep track of the positions of items and details, or at least the first 3.
 - [ ] You can't edit or delete the items and details that came from the master list.
 - [ ] The tethered part (i.e. the top left) stays updated with edits to the master list.

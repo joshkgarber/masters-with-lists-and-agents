@@ -133,10 +133,16 @@ def new_master_item(master_list_id):
         else:
             db = get_db()
             cur = db.cursor()
+            master_item_count = cur.execute(
+                "SELECT COUNT(id) FROM master_list_item_relations"
+                " WHERE master_list_id = ?",
+                (master_list_id,)
+            ).fetchone()[0]
+            position = master_item_count + 1
             cur.execute(
-                'INSERT INTO master_items (name, creator_id)'
+                'INSERT INTO master_items (name, position, creator_id)'
                 ' VALUES (?, ?)',
-                (name, g.user['id'])
+                (name, position, g.user['id'])
             )
             master_item_id = cur.lastrowid
             cur.execute(
