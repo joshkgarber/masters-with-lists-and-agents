@@ -291,6 +291,7 @@ def delete_item(list_id, item_id):
     alist = get_list(list_id)
     item, details = get_list_item(list_id, item_id)
     db = get_db()
+    db.execute("UPDATE items SET position = position + 1 WHERE position > ?", (item["position"],))
     db.execute('DELETE FROM items WHERE id = ?', (item_id,))
     db.execute('DELETE FROM item_detail_relations WHERE item_id = ?', (item_id,))
     db.execute(
@@ -478,7 +479,7 @@ def get_list_item(list_id, item_id, check_relation=True):
             abort(400)
     db = get_db()
     item = db.execute(
-        'SELECT i.id, i.name, i.created, u.username'
+        'SELECT i.id, i.name, i.position, i.created, u.username'
         ' FROM items i'
         ' JOIN users u ON i.creator_id = u.id'
         ' WHERE i.id = ?',

@@ -6,8 +6,8 @@
 - [x] You can create a (tethered) list off a master as a copy which you can edit
 - [ ] You can add to it (items and details)
     - [ ] Keep track of the positions of items and details.
-        - [ ] When you create an item
-        - [ ] When you delete an item
+        - [x] When you create an item
+        - [x] When you delete an item
         - [ ] When you create a detail
         - [ ] When you delete a detail
 - [ ] You can't edit or delete the items and details that came from the master list.
