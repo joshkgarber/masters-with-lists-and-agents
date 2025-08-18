@@ -1,28 +1,46 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}List: {{ alist['name'] }}{% endblock %}</h1>
-<p>{{ alist['description'] }} <a href="{{ url_for('lists.edit', list_id=alist['id']) }}">Edit</a></p>
-{% endblock %}
+<h1>{% block title %}List: {{ master_list['name'] }} (tethered){% endblock %}</h1>
+<p>{{ master_list['description'] }} <a href="{{ url_for('master_lists.view', master_list_id=master_list["id"]) }}">View Master</a>{% endblock %}
 
 {% block main %}
 <section id="items">
 	<h2>Items</h2>
-{% if items|length == 0 %}
+{% if master_list['master_items']|length == 0 %}
 	<p>Empty</p>
-	<a href="{{ url_for('lists.new_item', list_id=alist['id']) }}">New Item</a>
-</section>
 {% else %}
 	<a href="{{ url_for('lists.new_item', list_id=alist['id']) }}">New Item</a>
-	<table class="item-table">
+	<table>
 		<tr>
 			<th>ID</th>
 			<th>Name</th>
-			{% for detail in details %}
-			<th>{{ detail['name'] }}</th>
+			{% for master_detail in master_list["master_details"] %}
+			<th>{{ master_detail['name'] }}</th>
 			{% endfor %}
 			<th>Created</th>
 		</tr>
+		{% for master_item in master_list["master_items"] %}
+		<tr>
+			<td>{{ master_item['id'] }}</td>
+			{% if master_item['name']|length > 30 %}
+			<td>{{ master_item['name']|truncate(30,false,'...') }}</td>
+			{% else %}
+			<td>{{ master_item['name'] }}</td>
+			{% endif %}
+			{% for master_content in master_item['master_contents'] %}
+			{% if master_content|length > 30 %}
+			<td>{{ master_content|truncate(30,false,'...') }}</td>
+			{% else %}
+			<td>{{ master_content }}</td>
+			{% endif %}
+			{% endfor %}
+			<td>{{ master_item['created'].strftime('%d.%m.%Y') }}</td>
+			<td><a href="{{ url_for('master_lists.view_master_item', master_list_id=master_list['id'], master_item_id=master_item['id']) }}">View</a></td>
+		</tr>
+		{% endfor %}
+{% endif %}
+{% if items|length > 0 %}
 		{% for item in items %}
 		<tr>
 			<td>{{ item['id'] }}</td>

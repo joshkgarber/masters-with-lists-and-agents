@@ -3,12 +3,8 @@
 - [x] Only admin can manage master lists
 - [x] Admin can manage all admin-created master lists and master agents
 - [x] Master list and master agent views show the creator name
-- [x] You can create a (tethered) list off a master as a copy which you can edit
-- [ ] You can add to it (items and details)
-    - [ ] Keep track of the positions of items and details.
-        - [x] When you create an item
-        - [x] When you delete an item
-        - [ ] When you create a detail
-        - [ ] When you delete a detail
-- [ ] You can't edit or delete the items and details that came from the master list.
-- [ ] The tethered part (i.e. the top left) stays updated with edits to the master list.
+- [x] You can create a (tethered) list off a master as a copy which you can add items to.
+- [ ] You cannot edit the name, descriptions, items or details from the master list
+- [ ] You can add items to list
+- [ ] You cannot add details to a tethered list
+- [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.
