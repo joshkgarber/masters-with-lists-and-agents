@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from incontext.auth import login_required
 from incontext.db import get_db
+from incontext.db import dict_factory
 from incontext.master_lists import get_master_lists
 from incontext.master_lists import get_master_list
 
@@ -338,12 +339,15 @@ def delete_detail(list_id, detail_id):
 
 def get_user_lists():
     db = get_db()
+    db.row_factory = dict_factory
     user_lists = db.execute(
-        'SELECT l.id, l.name, l.description, l.created, t.master_list_id'
+        'SELECT l.id, l.name, l.description, l.created, t.master_list_id, m.name AS master_list_name, m.description AS master_list_description'
         ' FROM lists l'
         " LEFT JOIN list_tethers t"
         " ON t.list_id = l.id"
-        ' WHERE l.creator_id = ?',
+        " LEFT JOIN master_lists m"
+        " ON m.id = t.master_list_id"
+        " WHERE l.creator_id = ?",
         (g.user['id'],)
     ).fetchall()
     return user_lists
