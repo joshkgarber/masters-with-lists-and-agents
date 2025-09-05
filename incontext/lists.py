@@ -407,6 +407,14 @@ def get_list_items_with_details(list_id, check_creator=True):
         list_creator_id = get_list_creator_id(list_id)
         if list_creator_id != g.user['id']:
             abort(403)
+    alist = get_list(list_id)
+    if alist["tethered"]:
+        tethered = True
+        master_list_id = get_db().execute(
+            "SELECT master_list_id FROM list_tethers"
+            " WHERE list_id = ?",
+            (list_id,)
+        ).fetchone()[0]
     db = get_db()
     items = db.execute(
         'SELECT i.id, i.name, i.created'
@@ -415,21 +423,40 @@ def get_list_items_with_details(list_id, check_creator=True):
         ' WHERE r.list_id = ?',
         (list_id,)
     ).fetchall()
-    details = db.execute(
-        'SELECT d.id, d.name, d.description'
-        ' FROM details d'
-        ' JOIN list_detail_relations r ON r.detail_id = d.id'
-        ' WHERE r.list_id = ?',
-        (list_id,)
-    ).fetchall()
+    if tethered:
+        details = db.execute(
+            'SELECT d.id, d.name, d.description'
+            ' FROM master_details d'
+            ' JOIN master_list_detail_relations r ON r.master_detail_id = d.id'
+            ' WHERE r.master_list_id = ?',
+            (master_list_id,)
+        ).fetchall()
+    else:
+        details = db.execute(
+            'SELECT d.id, d.name, d.description'
+            ' FROM details d'
+            ' JOIN list_detail_relations r ON r.detail_id = d.id'
+            ' WHERE r.list_id = ?',
+            (list_id,)
+        ).fetchall()
     item_ids = [item['id'] for item in items]
     placeholders = f'{"?, " * len(item_ids)}'[:-2]
-    relations = db.execute(
-        'SELECT r.item_id, r.detail_id, r.content'
-        ' FROM item_detail_relations r'
-        f' WHERE r.item_id IN ({placeholders})',
-        item_ids
-    ).fetchall()
+    if tethered:
+        data = item_ids + [list_id]
+        relations = db.execute(
+            'SELECT r.item_id, r.master_detail_id as detail_id, r.content'
+            ' FROM untethered_content r'
+            f' WHERE r.item_id IN ({placeholders})'
+            "  AND r.list_id = ?",
+            data
+        ).fetchall()
+    else:
+        relations = db.execute(
+            'SELECT r.item_id, r.detail_id, r.content'
+            ' FROM item_detail_relations r'
+            f' WHERE r.item_id IN ({placeholders})',
+            item_ids
+        ).fetchall()
     list_items = []
     for item in items:
         this_item = {}

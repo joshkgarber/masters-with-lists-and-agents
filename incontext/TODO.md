@@ -13,11 +13,14 @@
     - I fixed it. The items are in the right place now.
     - It's not showing the details from master.
     - I fixed it. It's now showing the details from master.
-- [ ] You can add items to list
+- [x] You can add items to list
     - [x] The new item template shows the master list name and desc.
     - [x] The form shows the details from master
     - [x] The new item gets saved correctly
         - [x] The content for untethered items in a tethered list get saved to a separate table called untethered content.
-    - [ ] The new item is displayed correctly.
+    - [x] The new item is displayed correctly.
+        - [x] Update get_list_items_with_details to use untethered content if its a tethered list.
 - [ ] You cannot add details to a tethered list
+- [ ] You can edit untethered content (when you edit the item)
+- [ ] You can delete untethered content (when you delete the item)
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.
