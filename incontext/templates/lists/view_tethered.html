@@ -66,18 +66,19 @@
 </section>
 <section id="details">
 	<h2>Details</h2>
-{% if details|length == 0 %}
-	<p>Empty</p>
 	<a href="{{ url_for('lists.new_detail', list_id=alist['id']) }}">New Detail</a>
-</section>
-{% else %}
-	<a href="{{ url_for('lists.new_detail', list_id=alist['id']) }}">New Detail</a>
+	<dl>
+		{% for master_detail in master_list["master_details"] %}
+		<dt><b>{{ master_detail['name'] }} (tethered)</b></dt>
+		<dd>{{ master_detail['description'] }}</dd>
+		{% endfor %}
+{% if details|length > 0 %}
 	<dl>
 		{% for detail in details %}
 		<dt><b>{{ detail['name'] }}</b> <a href="{{ url_for('lists.edit_detail', list_id=alist['id'], detail_id=detail['id']) }}">Edit</a></dt>
 		<dd>{{ detail['description'] }}</dd>
 		{% endfor %}
 	</dl>
-</section>
 {% endif %}
+</section>
 {% endblock %}

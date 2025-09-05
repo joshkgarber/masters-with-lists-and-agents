@@ -12,6 +12,7 @@
     - I found that it's showing the items in the wrong place and not showing the details.
     - I fixed it. The items are in the right place now.
     - It's not showing the details from master.
+    - I fixed it. It's now showing the details from master.
 - [ ] You can add items to list
 - [ ] You cannot add details to a tethered list
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.
