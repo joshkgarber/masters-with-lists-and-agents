@@ -160,13 +160,23 @@ def delete(list_id):
 @login_required
 def new_item(list_id):
     if request.method == 'POST':
+        master_list_id = get_db().execute(
+            "SELECT master_list_id FROM list_tethers"
+            " WHERE list_id = ?",
+            (list_id,)
+        ).fetchone()[0]
         name = request.form['name']
         detail_fields = []
-        details = get_list_details(list_id)
+        details = None
+        if master_list_id:
+            master_list = get_master_list(master_list_id, False)
+            details = [master_detail for master_detail in master_list['master_details']]
+        else:
+            details = get_list_details(list_id)
         for detail in details:
             detail_id = detail['id']
             detail_content = request.form[str(detail_id)]
-            detail_fields.append((detail_id, detail_content))
+            detail_fields.append([detail_id, detail_content])
         error = None
         if not name:
             error = 'Name is required.'
@@ -187,13 +197,20 @@ def new_item(list_id):
                 (list_id, item_id)
             )
             relations = []
-            for field in detail_fields:
-                relations.append((item_id,) + field)
-            cur.executemany(
-                'INSERT INTO item_detail_relations (item_id, detail_id, content)'
-                ' VALUES(?, ?, ?)',
-                relations
-            )
+            for detail_field in detail_fields:
+                relations.append([list_id, item_id] + detail_field)
+            if master_list_id:
+                cur.executemany(
+                    "INSERT INTO untethered_content (list_id, item_id, master_detail_id, content)"
+                    " VALUES(?, ?, ?, ?)",
+                    relations
+                )
+            else:
+                cur.executemany(
+                    'INSERT INTO item_detail_relations (item_id, detail_id, content)'
+                    ' VALUES(?, ?, ?)',
+                    relations
+                )
             db.commit()
             return redirect(url_for('lists.view', list_id=list_id))
     alist = get_list(list_id)

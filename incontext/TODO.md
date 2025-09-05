@@ -16,7 +16,7 @@
 - [ ] You can add items to list
     - [x] The new item template shows the master list name and desc.
     - [x] The form shows the details from master
-    - [ ] The new item gets saved correctly
+    - [x] The new item gets saved correctly
         - [ ] The content for untethered items in a tethered list get saved to a separate table called untethered content.
     - [ ] The new item is displayed correctly.
 - [ ] You cannot add details to a tethered list
