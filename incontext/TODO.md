@@ -17,7 +17,7 @@
     - [x] The new item template shows the master list name and desc.
     - [x] The form shows the details from master
     - [x] The new item gets saved correctly
-        - [ ] The content for untethered items in a tethered list get saved to a separate table called untethered content.
+        - [x] The content for untethered items in a tethered list get saved to a separate table called untethered content.
     - [ ] The new item is displayed correctly.
 - [ ] You cannot add details to a tethered list
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.
