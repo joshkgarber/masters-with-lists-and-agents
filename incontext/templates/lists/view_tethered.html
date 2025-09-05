@@ -61,9 +61,9 @@
 			<td><a href="{{ url_for('lists.edit_item', list_id=alist['id'], item_id=item['id']) }}">Edit</a></td>
 		</tr>
 		{% endfor %}
+{% endif %}
 	</table>
 </section>
-{% endif %}
 <section id="details">
 	<h2>Details</h2>
 {% if details|length == 0 %}

@@ -113,6 +113,8 @@ def edit(list_id):
             )
             db.commit()
             return redirect(url_for('lists.index'))
+    if alist["tethered"]:
+        abort(403) # You can't edit a tethered list
     return render_template('lists/edit.html', alist=alist)
 
 
