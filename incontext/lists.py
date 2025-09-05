@@ -198,6 +198,18 @@ def new_item(list_id):
             return redirect(url_for('lists.view', list_id=list_id))
     alist = get_list(list_id)
     details = get_list_details(list_id)
+    if alist["tethered"]:
+        db = get_db()
+        master_list_id = db.execute(
+            "SELECT master_list_id"
+            " FROM list_tethers"
+            " WHERE list_id = ?",
+            (list_id,)
+        ).fetchone()[0]
+        master_list = get_master_list(master_list_id, False)
+        alist = master_list
+        alist["name"] = alist["name"] + " (tethered)"
+        details = master_list["master_details"]
     return render_template('lists/items/new.html', alist=alist, details=details)
 
 
