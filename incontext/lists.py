@@ -242,6 +242,15 @@ def view_item(list_id, item_id):
 @login_required
 def edit_item(list_id, item_id):
     alist = get_list(list_id)
+    master_list_id = get_db().execute(
+        "SELECT master_list_id FROM list_tethers"
+        " WHERE list_id = ?",
+        (list_id,)
+    ).fetchone()
+    if master_list_id:
+        master_list = get_master_list(list_id, False)
+        alist["name"] = master_list["name"] + " (tethered)"
+        alist["description"] = master_list["description"]
     item, details = get_list_item(list_id, item_id)
     if request.method == 'POST':
         name = request.form['name']
@@ -387,6 +396,8 @@ def get_user_lists():
 
 
 def get_list(list_id, check_creator=True):
+    db = get_db()
+    db.row_factory = dict_factory
     alist = get_db().execute(
         'SELECT l.id, l.name, l.description, l.tethered, l.creator_id, t.master_list_id'
         ' FROM lists l'
@@ -499,6 +510,13 @@ def get_list_item(list_id, item_id, check_relation=True):
         if item_list_id != list_id:
             abort(400)
     db = get_db()
+    master_list_id = db.execute(
+        "SELECT master_list_id FROM list_tethers"
+        " WHERE list_id = ?",
+        (list_id,)
+    ).fetchone()["master_list_id"]
+    if master_list_id:
+        tethered = True
     item = db.execute(
         'SELECT i.id, i.name, i.created, u.username'
         ' FROM items i'
@@ -506,13 +524,22 @@ def get_list_item(list_id, item_id, check_relation=True):
         ' WHERE i.id = ?',
         (item_id,)
     ).fetchone()
-    details = db.execute(
-        'SELECT d.id, r.content, d.name'
-        ' FROM item_detail_relations r'
-        ' JOIN details d ON r.detail_id = d.id'
-        ' WHERE r.item_id = ?',
-        (item_id,)
-    ).fetchall()
+    if tethered:
+        details = db.execute(
+            'SELECT d.id, d.name, d.description'
+            ' FROM master_details d'
+            ' JOIN master_list_detail_relations r ON r.master_detail_id = d.id'
+            ' WHERE r.master_list_id = ?',
+            (master_list_id,)
+        ).fetchall()
+    else:
+        details = db.execute(
+            'SELECT d.id, r.content, d.name'
+            ' FROM item_detail_relations r'
+            ' JOIN details d ON r.detail_id = d.id'
+            ' WHERE r.item_id = ?',
+            (item_id,)
+        ).fetchall()
     return item, details
 
 

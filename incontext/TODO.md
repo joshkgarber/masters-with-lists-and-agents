@@ -25,5 +25,10 @@
     - [x] Disable it on the backend.
 - [x] Items which are tethered show "tethered" in place of edit button.    
 - [ ] You can edit untethered content (when you edit the item)
+    - [x] It shows fields for the master details.
+    - [x] It shows the master list name and description.
+    - [ ] It shows the content
+    - [ ] It saves correctly in the database.
+- [ ] The view layout for tethered items shows the content.
 - [ ] You can delete untethered content (when you delete the item)
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.
