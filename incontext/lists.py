@@ -86,7 +86,7 @@ def view(list_id):
             " FROM list_tethers"
             " WHERE list_id = ?",
             (list_id,)
-        ).fetchone()[0]
+        ).fetchone()["master_list_id"]
         master_list = get_master_list(master_list_id, False)
         return render_template('lists/view_tethered.html', alist=alist, master_list=master_list, items=items, details=details)
     return render_template('lists/view.html', alist=alist, items=items, details=details)
@@ -427,7 +427,7 @@ def get_list_items_with_details(list_id, check_creator=True):
             "SELECT master_list_id FROM list_tethers"
             " WHERE list_id = ?",
             (list_id,)
-        ).fetchone()[0]
+        ).fetchone()["master_list_id"]
     db = get_db()
     items = db.execute(
         'SELECT i.id, i.name, i.created'
@@ -526,12 +526,24 @@ def get_list_item(list_id, item_id, check_relation=True):
     ).fetchone()
     if tethered:
         details = db.execute(
-            'SELECT d.id, d.name, d.description'
+            'SELECT d.name, d.id, u.content'
             ' FROM master_details d'
-            ' JOIN master_list_detail_relations r ON r.master_detail_id = d.id'
-            ' WHERE r.master_list_id = ?',
-            (master_list_id,)
+            " LEFT JOIN untethered_content u"
+            " ON d.id = u.master_detail_id"
+            " WHERE u.item_id = ?"
+            " AND u.list_id = ?",
+            (item_id, list_id)
         ).fetchall()
+        retrieved_ids = [detail["id"] for detail in details]
+        placeholders = f'{"?, " * len(retrieved_ids)}'[:-2]
+        missing_details = db.execute(
+            "SELECT id, name"
+            " FROM master_details"
+            f" WHERE id NOT IN ({placeholders})",
+            retrieved_ids
+        ).fetchall()
+        for missing_detail in missing_details:
+            details.append(dict(name=missing_detail["name"], id=missing_detail["id"], content=""))
     else:
         details = db.execute(
             'SELECT d.id, r.content, d.name'
