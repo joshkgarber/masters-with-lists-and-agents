@@ -2,6 +2,11 @@
 
 - [x] Define tests
 
+- [ ] New tethered list
+    - GET requests
+        - [ ] User must be logged in and own the list
+        - [ ] Page provides all master lists as options
+    - [ ] The list
 - [ ] Create untethered content
 - [ ] View untethered content
 - [ ] Edit untethered content
