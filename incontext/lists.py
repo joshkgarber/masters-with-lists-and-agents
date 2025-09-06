@@ -164,7 +164,9 @@ def new_item(list_id):
             "SELECT master_list_id FROM list_tethers"
             " WHERE list_id = ?",
             (list_id,)
-        ).fetchone()[0]
+        ).fetchone()
+        if master_list_id:
+            master_list_id = master_list_id["master_list_id"]
         name = request.form['name']
         detail_fields = []
         details = None
@@ -197,15 +199,17 @@ def new_item(list_id):
                 (list_id, item_id)
             )
             relations = []
-            for detail_field in detail_fields:
-                relations.append([list_id, item_id] + detail_field)
             if master_list_id:
+                for detail_field in detail_fields:
+                    relations.append([list_id, item_id] + detail_field)
                 cur.executemany(
                     "INSERT INTO untethered_content (list_id, item_id, master_detail_id, content)"
                     " VALUES(?, ?, ?, ?)",
                     relations
                 )
             else:
+                for detail_field in detail_fields:
+                    relations.append([item_id] + detail_field)
                 cur.executemany(
                     'INSERT INTO item_detail_relations (item_id, detail_id, content)'
                     ' VALUES(?, ?, ?)',
@@ -246,7 +250,7 @@ def edit_item(list_id, item_id):
         "SELECT master_list_id FROM list_tethers"
         " WHERE list_id = ?",
         (list_id,)
-    ).fetchone()["master_list_id"]
+    ).fetchone()
     if master_list_id:
         master_list = get_master_list(list_id, False)
         alist["name"] = master_list["name"] + " (tethered)"
@@ -438,6 +442,7 @@ def get_list_items_with_details(list_id, check_creator=True):
         if list_creator_id != g.user['id']:
             abort(403)
     alist = get_list(list_id)
+    tethered = False
     if alist["tethered"]:
         tethered = True
         master_list_id = get_db().execute(
@@ -531,9 +536,8 @@ def get_list_item(list_id, item_id, check_relation=True):
         "SELECT master_list_id FROM list_tethers"
         " WHERE list_id = ?",
         (list_id,)
-    ).fetchone()["master_list_id"]
-    if master_list_id:
-        tethered = True
+    ).fetchone()
+    tethered = True if master_list_id is not None else False
     item = db.execute(
         'SELECT i.id, i.name, i.created, u.username'
         ' FROM items i'

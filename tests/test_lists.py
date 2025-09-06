@@ -1,5 +1,5 @@
 import pytest
-from incontext.db import get_db
+from incontext.db import get_db, dict_factory
 
 def test_index(client, auth):
     # user must be logged in
@@ -21,23 +21,23 @@ def test_index(client, auth):
     assert b'list description 4' not in response.data
 
 
-def test_create(app, client, auth):
+def test_new(app, client, auth):
     # user must be logged in
-    response = client.get('/lists/create')
+    response = client.get('/lists/new')
     assert response.status_code == 302
     assert response.headers['Location'] == '/auth/login'
     auth.login()
-    response = client.get('/lists/create')
+    response = client.get('/lists/new')
     assert response.status_code == 200
     # data validation
     response = client.post(
-        'lists/create',
+        'lists/new',
         data = {'name': '', 'description': ''}
     )
     assert b'Name is required' in response.data
     # list is saved to database
     response = client.post(
-        'lists/create',
+        'lists/new',
         data = {'name': 'list name 5', 'description': 'list description 5'},
     )
     with app.app_context():
@@ -472,6 +472,7 @@ def test_edit_item(client, auth, app):
     # changes are saved to database
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         items_before = db.execute('SELECT name FROM items').fetchall()
         relations_before = db.execute('SELECT content FROM item_detail_relations').fetchall()
         response = client.post(
@@ -508,6 +509,7 @@ def test_delete_item(client, auth, app):
     auth.login()
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         items_before = db.execute('SELECT id, name FROM items').fetchall()
         contents_before = db.execute('SELECT content FROM item_detail_relations').fetchall()
         relations_before = db.execute('SELECT list_id, item_id FROM list_item_relations').fetchall()
@@ -551,6 +553,7 @@ def test_new_detail(client, auth, app):
     assert b'Name is required' in response.data
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         details_before = db.execute('SELECT * FROM details').fetchall()
         rels_before = db.execute('SELECT * FROM list_detail_relations').fetchall()
         response = client.post('/lists/1/details/new',
@@ -606,6 +609,7 @@ def test_edit_detail(client, auth, app):
     # detail is updated in db
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         details_before = db.execute('SELECT * FROM details').fetchall()
         rels_before = db.execute('SELECT * FROM list_detail_relations').fetchall()
         irels_before = db.execute('SELECT * FROM item_detail_relations').fetchall()
@@ -646,6 +650,7 @@ def test_delete_detail(client, auth, app):
     # detail and related records get deleted
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         dets_before = db.execute('SELECT * FROM details').fetchall()
         i_d_rels_before = db.execute('SELECT * FROM item_detail_relations').fetchall()
         l_d_rels_before = db.execute('SELECT * FROM list_detail_relations').fetchall()

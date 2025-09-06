@@ -31,6 +31,6 @@
     - [x] It shows the content
     - [x] It saves correctly in the database.
         - [x] When you create a new detail on a master, it needs to create an empty entry in untethered content for every tethered list item.
-- [ ] The view layout for tethered items shows the content.
+- [x] The view layout for tethered items shows the content.
 - [ ] You can delete untethered content (when you delete the item)
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.

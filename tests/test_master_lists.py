@@ -1,5 +1,5 @@
 import pytest
-from incontext.db import get_db
+from incontext.db import get_db, dict_factory
 
 
 def test_index(client, auth):
@@ -272,6 +272,7 @@ def test_new_master_item(app, client, auth):
     # new master item is saved to db correctly
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         master_items_before = db.execute(
             'SELECT id, creator_id, name FROM master_items'
         ).fetchall()
@@ -469,6 +470,7 @@ def test_edit_master_item(client, auth, app):
     with app.app_context():
         # changes are saved to database
         db = get_db()
+        db.row_factory = dict_factory
         master_items_before = db.execute('SELECT name FROM master_items').fetchall()
         master_relations_before = db.execute('SELECT master_content FROM master_item_detail_relations').fetchall()
         response = client.post(
@@ -506,6 +508,7 @@ def test_delete_master_item(client, auth, app):
     auth.login("admin2", "admin2")
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         master_items_before = db.execute('SELECT id, name FROM master_items').fetchall()
         master_contents_before = db.execute('SELECT master_content FROM master_item_detail_relations').fetchall()
         master_relations_before = db.execute('SELECT master_list_id, master_item_id FROM master_list_item_relations').fetchall()
@@ -546,6 +549,7 @@ def test_new_master_detail(client, auth, app):
     assert b"Name is required" in response.data
     with app.app_context():
         db = get_db()
+        db.row_factory = dict_factory
         master_details_before = db.execute("SELECT * FROM master_details").fetchall()
         master_list_detail_relations_before = db.execute('SELECT * FROM master_list_detail_relations').fetchall()
         response = client.post("/master-lists/1/master-details/new",
@@ -596,6 +600,7 @@ def test_edit_master_detail(client, auth, app):
     with app.app_context():
         # master detail is updated in db
         db = get_db()
+        db.row_factory = dict_factory
         master_details_before = db.execute("SELECT * FROM master_details").fetchall()
         master_list_detail_relations_before = db.execute("SELECT * FROM master_list_detail_relations").fetchall()
         master_item_detail_relations_before = db.execute("SELECT * FROM master_item_detail_relations").fetchall()
@@ -636,6 +641,7 @@ def test_delete_master_detail(client, auth, app):
     with app.app_context():
         # master detail and master relation records get deleted
         db = get_db()
+        db.row_factory = dict_factory
         master_details_before = db.execute("SELECT * FROM master_details").fetchall()
         master_item_detail_relations_before = db.execute("SELECT * FROM master_item_detail_relations").fetchall()
         master_list_detail_relations_before = db.execute("SELECT * FROM master_list_detail_relations").fetchall()
