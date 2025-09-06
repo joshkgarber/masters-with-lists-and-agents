@@ -312,12 +312,16 @@ def delete_item(list_id, item_id):
     item, details = get_list_item(list_id, item_id)
     db = get_db()
     db.execute('DELETE FROM items WHERE id = ?', (item_id,))
-    db.execute('DELETE FROM item_detail_relations WHERE item_id = ?', (item_id,))
     db.execute(
         'DELETE from list_item_relations'
         ' WHERE list_id = ? AND item_id = ?',
         (list_id, item_id)
     )
+    tethered = True if alist["tethered"] else False
+    if tethered:
+        db.execute("DELETE FROM untethered_content WHERE item_id = ?", (item_id,))
+    else:
+        db.execute('DELETE FROM item_detail_relations WHERE item_id = ?', (item_id,))
     db.commit()
     return redirect(url_for('lists.view', list_id=list_id))
 
@@ -557,7 +561,7 @@ def get_list_item(list_id, item_id, check_relation=True):
         ).fetchall()
         retrieved_ids = [detail["id"] for detail in details]
         placeholders = f'{"?, " * len(retrieved_ids)}'[:-2]
-        retrieved_ids.append(master_list_id) # for the sql query
+        retrieved_ids.append(master_list_id["master_list_id"]) # for the sql query
         missing_details = db.execute(
             "SELECT md.id, md.name"
             " FROM master_details md"
