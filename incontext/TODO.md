@@ -21,6 +21,9 @@
     - [x] The new item is displayed correctly.
         - [x] Update get_list_items_with_details to use untethered content if its a tethered list.
 - [ ] You cannot add details to a tethered list
+    - [x] Take the button off the layout.
+    - [x] Disable it on the backend.
+- [ ] Items which are tethered show "tethered" in place of edit button.    
 - [ ] You can edit untethered content (when you edit the item)
 - [ ] You can delete untethered content (when you delete the item)
 - [ ] The data is not duplicated. The tethered list is concatenated to the master list when served.

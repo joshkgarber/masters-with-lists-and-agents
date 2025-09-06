@@ -296,6 +296,8 @@ def delete_item(list_id, item_id):
 @login_required
 def new_detail(list_id):
     alist = get_list(list_id)
+    if alist["tethered"]:
+        abort(403)
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']

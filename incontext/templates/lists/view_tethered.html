@@ -66,7 +66,6 @@
 </section>
 <section id="details">
 	<h2>Details</h2>
-	<a href="{{ url_for('lists.new_detail', list_id=alist['id']) }}">New Detail</a>
 	<dl>
 		{% for master_detail in master_list["master_details"] %}
 		<dt><b>{{ master_detail['name'] }} (tethered)</b></dt>
