@@ -37,6 +37,7 @@
 			{% endfor %}
 			<td>{{ master_item['created'].strftime('%d.%m.%Y') }}</td>
 			<td><a href="{{ url_for('master_lists.view_master_item', master_list_id=master_list['id'], master_item_id=master_item['id']) }}">View</a></td>
+            <td>(tethered)</td>
 		</tr>
 		{% endfor %}
 {% endif %}
