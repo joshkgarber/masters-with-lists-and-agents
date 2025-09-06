@@ -222,7 +222,7 @@ def new_item(list_id):
             " FROM list_tethers"
             " WHERE list_id = ?",
             (list_id,)
-        ).fetchone()[0]
+        ).fetchone()["master_list_id"]
         master_list = get_master_list(master_list_id, False)
         alist = master_list
         alist["name"] = alist["name"] + " (tethered)"
@@ -246,7 +246,7 @@ def edit_item(list_id, item_id):
         "SELECT master_list_id FROM list_tethers"
         " WHERE list_id = ?",
         (list_id,)
-    ).fetchone()
+    ).fetchone()["master_list_id"]
     if master_list_id:
         master_list = get_master_list(list_id, False)
         alist["name"] = master_list["name"] + " (tethered)"
@@ -255,11 +255,16 @@ def edit_item(list_id, item_id):
     if request.method == 'POST':
         name = request.form['name']
         detail_fields = []
-        details = get_list_details(list_id)
+        details = None
+        if master_list_id:
+            master_list = get_master_list(master_list_id, False)
+            details = [master_detail for master_detail in master_list['master_details']]
+        else:
+            details = get_list_details(list_id)
         for detail in details:
             detail_id = detail['id']
             detail_content = request.form[str(detail_id)]
-            detail_fields.append((detail_content, item_id, detail_id))
+            detail_fields.append([detail_content, item_id, detail_id])
         error = None
         if not name:
             error = 'Name is required.'
@@ -272,13 +277,25 @@ def edit_item(list_id, item_id):
                 ' WHERE id = ?',
                 (name, item_id)
             )
-            db.executemany(
-                'UPDATE item_detail_relations'
-                ' SET content = ?'
-                ' WHERE item_id = ?'
-                ' AND detail_id = ?',
-                detail_fields
-            )
+            if master_list_id:
+                for detail_field in detail_fields:
+                    detail_field.append(list_id)    
+                db.executemany(
+                    "UPDATE untethered_content"
+                    " SET content = ?"
+                    " WHERE item_id = ?"
+                    " AND master_detail_id = ?"
+                    " AND list_id = ?",
+                    detail_fields
+                )
+            else:
+                db.executemany(
+                    'UPDATE item_detail_relations'
+                    ' SET content = ?'
+                    ' WHERE item_id = ?'
+                    ' AND detail_id = ?',
+                    detail_fields
+                )
             db.commit()
             return redirect(url_for('lists.view', list_id=list_id))
     return render_template('lists/items/edit.html', alist=alist, item=item, details=details)
@@ -536,10 +553,14 @@ def get_list_item(list_id, item_id, check_relation=True):
         ).fetchall()
         retrieved_ids = [detail["id"] for detail in details]
         placeholders = f'{"?, " * len(retrieved_ids)}'[:-2]
+        retrieved_ids.append(master_list_id) # for the sql query
         missing_details = db.execute(
-            "SELECT id, name"
-            " FROM master_details"
-            f" WHERE id NOT IN ({placeholders})",
+            "SELECT md.id, md.name"
+            " FROM master_details md"
+            " JOIN master_list_detail_relations mldr"
+            " ON mldr.master_detail_id = md.id"
+            f" WHERE md.id NOT IN ({placeholders})"
+            " AND mldr.master_list_id = ?",
             retrieved_ids
         ).fetchall()
         for missing_detail in missing_details:

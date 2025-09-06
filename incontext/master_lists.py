@@ -265,6 +265,28 @@ def new_master_detail(master_list_id):
                 'VALUES (?, ?, ?)',
                 data
             )
+            tethered_lists = cur.execute(
+                "SELECT lir.item_id, lir.list_id"
+                " FROM list_item_relations lir"
+                " RIGHT JOIN list_tethers lt"
+                " ON lt.list_id = lir.list_id"
+                " WHERE lt.master_list_id = ?",
+                (master_list_id,)
+            ).fetchall()
+            entries = []
+            for tethered_list in tethered_lists:
+                entries.append([
+                    tethered_list["list_id"],
+                    tethered_list["item_id"],
+                    master_detail_id,
+                    ""
+                ])
+            if entries:
+                cur.executemany(
+                    "INSERT INTO untethered_content (list_id, item_id, master_detail_id, content)"
+                    " VALUES (?, ?, ?, ?)",
+                    entries
+                )
             db.commit()
             return redirect(url_for('master_lists.view', master_list_id=master_list["id"]))
     return render_template("master-lists/master-details/new.html", master_list=master_list)
