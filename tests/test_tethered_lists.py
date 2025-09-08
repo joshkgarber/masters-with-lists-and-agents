@@ -85,7 +85,12 @@ def test_view_tethered_list(app, client, auth):
             other_master_details = other_master_list["master_details"]
             for other_master_detail in other_master_details:
                 assert other_master_detail["name"].encode() not in response.data
-
+        untethered_contents = db.execute("SELECT item_id, content FROM untethered_content WHERE list_id = 5").fetchall()
+        for ut in untethered_contents:
+            assert ut["content"].encode() in response.data
+            item_name = db.execute("SELECT name FROM items WHERE id = ?", (ut["item_id"],)).fetchone()
+            assert item_name["name"].encode() in response.data
+        
 
 
 def test_new_untethered_content(app, client, auth):

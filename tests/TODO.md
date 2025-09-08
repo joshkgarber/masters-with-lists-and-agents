@@ -14,12 +14,12 @@
             - [x] Insert into `list_tethers` table
 - [ ] View tethered list
         - [x] User must be logged in and own the list
-        - [ ] The list shows the data of the master list:
+        - [x] The list shows the data of the master list:
             - [x] Name and description
             - [x] Item names
             - [x] Detail names
             - [x] Contents
-        - [ ] The list doesn't show data of other master lists:
+        - [x] The list doesn't show data of other master lists:
             - [x] Name and description
             - [x] Item name
             - [x] Detail names
@@ -27,11 +27,9 @@
         - [ ] The list shows untethered content
             - [ ] Item name
             - [ ] Item contents (untethered content)
-            - [ ] Not name and contents of other lists
         - [ ] The list doesn't show untethered content from other lists
             - [ ] Item name
             - [ ] Item contents (untethered content)
-            - [ ] Not name and contents of other lists
 - [ ] Create untethered content
     - [ ] Get requests
         - [ ] You have to be logged in
