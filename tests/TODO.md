@@ -37,14 +37,13 @@
         - [x] The master list name and description are shown
         - [x] The master list details are shown
         - [x] Master details from other master lists are not shown
-    - [ ] Post requests
+    - [x] Post requests
         - [x] You gotta be logged in
         - [x] You gotta own the list
-        - [ ] The master list is tethered to the list
-        - [ ] Item name is required
-        - [ ] The item is saved
-            - [ ] New record in items
-            - [ ] New record in untethered content
+        - [x] Item name is required (covered by test_lists.py
+        - [x] The item is saved
+            - [x] New record in items
+            - [x] New record in untethered content
 - [ ] Edit untethered content
     - [ ] Get requests
         - [ ] You have to be logged in

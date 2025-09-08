@@ -140,3 +140,24 @@ def test_new_untethered_content(app, client, auth):
     auth.login()
     response = client.get("/lists/5/items/new")
     assert response.status_code == 200
+    # Item name is required - covered by test_lists.py
+    # The item and untethered content are saved is saved
+    with app.app_context():
+        db = get_db()
+        db.row_factory = dict_factory
+        items_before = db.execute("SELECT id FROM items").fetchall()
+        untethered_content_before = db.execute("SELECT id FROM untethered_content").fetchall()
+        data = {
+            "name": "item name 10",
+            "1": "untethered content 6",
+            "2": "untethered content 7"
+        }
+        response = client.post("/lists/5/items/new", data=data)
+        assert response.status_code == 302
+        assert response.headers["Location"] == "/lists/5/view"
+        items_after = db.execute("SELECT id FROM items").fetchall()
+        untethered_content_after = db.execute("SELECT id FROM untethered_content").fetchall()
+        assert len(items_after) == len(items_before) + 1
+        assert len(untethered_content_after) == len(untethered_content_before) + 2
+
+
