@@ -2,13 +2,45 @@
 
 - [x] Define tests
 
-- [ ] New tethered list
+- [x] New tethered list
     - GET requests
-        - [ ] User must be logged in and own the list
-        - [ ] Page provides all master lists as options
-    - [ ] The list
+        - [x] User must be logged in
+        - [x] Page provides all master lists as options
+    - POST requests
+        - [x] User must be logged in
+        - [x] The master_list_id must exist
+        - [x] The list is saved to the database
+            - [x] Insert into `lists` table with special name, no description, and tethered attribute
+            - [x] Insert into `list_tethers` table
+- [ ] View tethered list
+        - [x] User must be logged in and own the list
+        - [ ] The list shows the data of the master list:
+            - [ ] Name and description
+            - [ ] Detail names
+            - [ ] Item names
+            - [ ] Contents
+        - [ ] The list doesn't show data of other master lists:
+            - [ ] Name and description
+            - [ ] Detail names
+            - [ ] Item names and contents
+        - [ ] The list shows untethered content
+            - [ ] Item name
+            - [ ] Item contents (untethered content)
+            - [ ] Not name and contents of other lists
 - [ ] Create untethered content
-- [ ] View untethered content
+    - [ ] Get requests
+        - [ ] You have to be logged in
+        - [ ] You have to be the list owner
+        - [ ] The master list details are shown
+        - [ ] Master details from other master lists are not shown
+    - [ ] Post requests
+        - [ ] You gotta be logged in
+        - [ ] You gotta own the list
+        - [ ] The master list is tethered to the list
+        - [ ] Item name is required
+        - [ ] The item is saved
+            - [ ] New record in items
+            - [ ] New record in untethered content
 - [ ] Edit untethered content
 - [ ] Delete untethered content
 - [ ] You can't add details to a tethered list
