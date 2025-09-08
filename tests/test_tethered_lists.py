@@ -118,11 +118,25 @@ def test_new_untethered_content(app, client, auth):
         master_list = get_master_list(master_list_id, False)
         assert master_list["name"].encode() in response.data
         assert master_list["description"].encode() in response.data
+        # The master list details are shown
         master_details = master_list["master_details"]
         for master_detail in master_details:
             assert master_detail["name"].encode() in response.data
+        # Master details from other master lists are not shown.
         for other_master_list_id in other_master_list_ids:
             other_master_list = get_master_list(other_master_list_id["id"], False)
             other_master_details = other_master_list["master_details"]
             for other_master_detail in other_master_details:
                 assert other_master_detail["name"].encode() not in response.data
+    # Post requests
+    # You have to be logged in and own the list
+    auth.logout()
+    response = client.get("/lists/5/items/new")
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/auth/login"
+    auth.login("other", "other")
+    response = client.get("/lists/5/items/new")
+    assert response.status_code == 403
+    auth.login()
+    response = client.get("/lists/5/items/new")
+    assert response.status_code == 200
