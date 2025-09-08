@@ -24,18 +24,19 @@
             - [x] Item name
             - [x] Detail names
             - [x] Item names and contents
-        - [ ] The list shows untethered content
-            - [ ] Item name
-            - [ ] Item contents (untethered content)
-        - [ ] The list doesn't show untethered content from other lists
-            - [ ] Item name
-            - [ ] Item contents (untethered content)
-- [ ] Create untethered content
-    - [ ] Get requests
-        - [ ] You have to be logged in
-        - [ ] You have to be the list owner
-        - [ ] The master list details are shown
-        - [ ] Master details from other master lists are not shown
+        - [x] The list shows untethered content
+            - [x] Item name
+            - [x] Item contents (untethered content)
+        - [x] The list doesn't show untethered content from other lists
+            - [x] Item name
+            - [x] Item contents (untethered content)
+- [x] Create unethered content
+    - [x] Get requests
+        - [x] You have to be logged in
+        - [x] You have to be the list owner
+        - [x] The master list name and description are shown
+        - [x] The master list details are shown
+        - [x] Master details from other master lists are not shown
     - [ ] Post requests
         - [ ] You gotta be logged in
         - [ ] You gotta own the list

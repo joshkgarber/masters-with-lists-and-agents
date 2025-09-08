@@ -90,9 +90,39 @@ def test_view_tethered_list(app, client, auth):
             assert ut["content"].encode() in response.data
             item_name = db.execute("SELECT name FROM items WHERE id = ?", (ut["item_id"],)).fetchone()
             assert item_name["name"].encode() in response.data
-        
+        other_untethered_contents = db.execute("SELECT item_id, content FROM untethered_content WHERE list_id != 5").fetchall()
+        for out in other_untethered_contents:
+            assert out["content"].encode() not in response.data
+            item_name = db.execute("SELECT name FROM items WHERE id = ?", (out["item_id"],)).fetchone()
+            assert item_name["name"].encode() not in response.data
 
 
 def test_new_untethered_content(app, client, auth):
     # Get requests
+    # You have to be logged in and own the list
     response = client.get("/lists/5/items/new")
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/auth/login"
+    auth.login("other", "other")
+    response = client.get("/lists/5/items/new")
+    assert response.status_code == 403
+    auth.login()
+    response = client.get("/lists/5/items/new")
+    assert response.status_code == 200
+    with app.app_context():
+        # The master list name and description are shown
+        db = get_db()
+        db.row_factory = dict_factory
+        master_list_id = db.execute("SELECT master_list_id FROM list_tethers WHERE list_id = 5").fetchone()["master_list_id"]
+        other_master_list_ids = db.execute("SELECT id FROM master_lists WHERE id != ?", (master_list_id,)).fetchall()
+        master_list = get_master_list(master_list_id, False)
+        assert master_list["name"].encode() in response.data
+        assert master_list["description"].encode() in response.data
+        master_details = master_list["master_details"]
+        for master_detail in master_details:
+            assert master_detail["name"].encode() in response.data
+        for other_master_list_id in other_master_list_ids:
+            other_master_list = get_master_list(other_master_list_id["id"], False)
+            other_master_details = other_master_list["master_details"]
+            for other_master_detail in other_master_details:
+                assert other_master_detail["name"].encode() not in response.data
