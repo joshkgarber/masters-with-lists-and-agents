@@ -56,7 +56,9 @@ VALUES
 	(3, "item name 4"),
 	(3, "item name 5"),
 	(3, "item name 6"),
-    (2, "item name 7");
+    (2, "item name 7"),
+    (2, "item name 8"),
+    (2, "item name 9");
 
 
 INSERT INTO details (creator_id, name, description)
@@ -83,13 +85,15 @@ VALUES
 	(6, 6, "relation content 10");
 
 
-INSERT INTO lists (creator_id, name, description)
+INSERT INTO lists (creator_id, name, description, tethered)
 VALUES
-	(2, "list name 1", "list description 1"),
-	(2, "list name 2", "list description 2"),
-	(3, "list name 3", "list description 3"),
-	(3, "list name 4", "list description 4"),
-    (2, "list name 5 (tethered)", "list description 5");
+	(2, "list name 1", "list description 1", 0),
+	(2, "list name 2", "list description 2", 0),
+	(3, "list name 3", "list description 3", 0),
+	(3, "list name 4", "list description 4", 0),
+    (2, "list name 5 (tethered)", "list description 5", 1),
+    (2, "list name 6 (tethered)", "list description 6", 1),
+    (3, "list name 7 (tethered)", "list description 7", 1);
 
 
 INSERT INTO list_item_relations (list_id, item_id)
@@ -99,7 +103,10 @@ VALUES
 	(2, 3),
 	(3, 4),
 	(3, 5),
-	(5, 6);
+	(4, 6),
+    (5, 7),
+	(6, 8),
+	(7, 9);
 
 
 INSERT INTO list_detail_relations (list_id, detail_id)
@@ -135,11 +142,16 @@ VALUES
 
 INSERT INTO list_tethers (list_id, master_list_id)
 VALUES
-    (5, 1);
+    (5, 1),
+    (6, 1),
+    (7, 2);
 
 
 INSERT INTO untethered_content (list_id, item_id, master_detail_id, content)
 VALUES
     (5, 7, 1, "untethered content 1"),
-    (5, 7, 2, "untethered content 2");
+    (5, 7, 2, "untethered content 2"),
+    (6, 8, 1, "untethered content 3"),
+    (6, 8, 2, "untethered content 4"),
+    (7, 9, 3, "untethered content 5");
 

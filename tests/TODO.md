@@ -15,15 +15,20 @@
 - [ ] View tethered list
         - [x] User must be logged in and own the list
         - [ ] The list shows the data of the master list:
-            - [ ] Name and description
-            - [ ] Detail names
-            - [ ] Item names
-            - [ ] Contents
+            - [x] Name and description
+            - [x] Item names
+            - [x] Detail names
+            - [x] Contents
         - [ ] The list doesn't show data of other master lists:
-            - [ ] Name and description
-            - [ ] Detail names
-            - [ ] Item names and contents
+            - [x] Name and description
+            - [x] Item name
+            - [x] Detail names
+            - [x] Item names and contents
         - [ ] The list shows untethered content
+            - [ ] Item name
+            - [ ] Item contents (untethered content)
+            - [ ] Not name and contents of other lists
+        - [ ] The list doesn't show untethered content from other lists
             - [ ] Item name
             - [ ] Item contents (untethered content)
             - [ ] Not name and contents of other lists
@@ -45,6 +50,6 @@
 - [ ] Delete untethered content
 - [ ] You can't add details to a tethered list
 - [ ] You can't edit tethered items
-- [ ] The master list name and description are shown on tethered lists
+- [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
 
 - [ ] Write tests
