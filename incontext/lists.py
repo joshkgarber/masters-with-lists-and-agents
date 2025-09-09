@@ -261,7 +261,7 @@ def edit_item(list_id, item_id):
         detail_fields = []
         details = None
         if master_list_id:
-            master_list = get_master_list(master_list_id, False)
+            master_list = get_master_list(master_list_id["master_list_id"], False)
             details = [master_detail for master_detail in master_list['master_details']]
         else:
             details = get_list_details(list_id)

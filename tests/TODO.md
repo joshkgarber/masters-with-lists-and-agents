@@ -52,15 +52,14 @@
         - [x] The master list name and description are shown
         - [x] The master list details are shown
         - [x] Master details from other master lists are not shown
-    - [ ] Post requests
-        - [ ] You gotta be logged in
-        - [ ] You gotta own the list
-        - [ ] The master list is tethered to the list
-        - [ ] Item name is required
-        - [ ] The item is saved
-            - [ ] Updated record in items
-            - [ ] Updated record in untethered content
-            - [ ] Other untethered content not changed
+    - [x] Post requests
+        - [x] You gotta be logged in
+        - [x] You gotta own the list
+        - [x] Item name is required
+        - [x] The item is saved
+            - [x] Updated record in items
+            - [x] Updated record in untethered content
+            - [x] Other untethered content not changed
 - [ ] Delete untethered content
 - [ ] You can't add details to a tethered list
 - [ ] You can't edit tethered items

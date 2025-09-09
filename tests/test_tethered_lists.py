@@ -196,6 +196,42 @@ def test_edit_untethered_content(client, app, auth):
             other_master_details = other_master_list["master_details"]
             for other_master_detail in other_master_details:
                 assert other_master_detail["name"].encode() not in response.data
+    # Post requests
+    # User must be logged in and own the list
+    auth.logout()
+    data = {
+        "name": "item name 7 updated",
+        "1": "untethered content 1 updated",
+        "2": "untethered content 2 updated"
+    }
+    response = client.post("/lists/5/items/7/edit", data=data)
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/auth/login"
+    auth.login("other", "other")
+    response = client.post("/lists/5/items/7/edit", data=data)
+    assert response.status_code == 403
+    # Item name is required
+    auth.login()
+    data["name"] = ""
+    response = client.post("/lists/5/items/7/edit", data=data)
+    assert b"Name is required" in response.data
+    # The item is saved
+    data["name"] = "item name 7 updated"
+    with app.app_context():
+        db = get_db()
+        db.row_factory = dict_factory
+        items_before = db.execute("SELECT name FROM items").fetchall()
+        untethered_content_before = db.execute("SELECT content FROM untethered_content WHERE list_id = 5").fetchall()
+        other_untethered_content_before = db.execute("SELECT content FROM untethered_content WHERE list_id != 5").fetchall()
+        response = client.post("/lists/5/items/7/edit", data=data)
+        items_after = db.execute("SELECT name FROM items").fetchall()
+        untethered_content_after = db.execute("SELECT content FROM untethered_content").fetchall()
+        other_untethered_content_after = db.execute("SELECT content FROM untethered_content WHERE list_id != 5").fetchall()
+        assert items_after[6] != items_before[6]
+        assert items_after[:6] + items_after[7:] == items_before[:6] + items_before[7:]
+        assert untethered_content_before != untethered_content_after
+        assert other_untethered_content_before == other_untethered_content_after
+        # Redirect to the lists's view layout
+        assert response.status_code == 302
+        assert response.headers["Location"] == "/lists/5/view"
 
-
-    
