@@ -12,7 +12,7 @@
         - [x] The list is saved to the database
             - [x] Insert into `lists` table with special name, no description, and tethered attribute
             - [x] Insert into `list_tethers` table
-- [ ] View tethered list
+- [x] View tethered list
         - [x] User must be logged in and own the list
         - [x] The list shows the data of the master list:
             - [x] Name and description
@@ -69,9 +69,9 @@
 - [x] You can't add details to a tethered list
     - [x] Get request
     - [x] Post request
-- [ ] You can't edit the tethered list name or description
+- [x] You can't edit the tethered list name or description
     - [x] Get request
     - [x] Post request
-- [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
 
-- [ ] Write tests
+- [x] Write tests
+- [ ] Check coverage

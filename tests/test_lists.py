@@ -35,17 +35,18 @@ def test_new(app, client, auth):
         data = {'name': '', 'description': ''}
     )
     assert b'Name is required' in response.data
-    # list is saved to database
-    response = client.post(
-        'lists/new',
-        data = {'name': 'list name 5', 'description': 'list description 5'},
-    )
     with app.app_context():
+        # list is saved to database
         db = get_db()
-        lists = db.execute('SELECT name, description FROM lists WHERE creator_id = 2').fetchall()
-        assert len(lists) == 3
-        assert lists[2]['name'] == 'list name 5'
-        assert lists[2]['description'] == 'list description 5'
+        lists_before = db.execute("SELECT name, description FROM lists WHERE creator_id = 2").fetchall()
+        response = client.post(
+            'lists/new',
+            data = {'name': 'new list name', 'description': 'new list description'},
+        )
+        lists_after = db.execute('SELECT name, description FROM lists WHERE creator_id = 2').fetchall()
+        assert len(lists_after) == len(lists_before) + 1
+        assert lists_after[-1]['name'] == 'new list name'
+        assert lists_after[-1]['description'] == 'new list description'
     # redirected to lists.index
     assert response.status_code == 302
     assert response.headers['Location'] == '/lists/'
@@ -387,7 +388,7 @@ def test_view_item(client, auth, app):
         for other_detail in other_details:
             assert other_detail['name'].encode() not in response.data
     # item must exist
-    assert client.get('lists/1/items/7/view').status_code == 404
+    assert client.get('lists/1/items/70/view').status_code == 404
 
 
 def test_edit_item(client, auth, app):
@@ -495,7 +496,7 @@ def test_edit_item(client, auth, app):
     assert response.status_code == 302
     assert response.headers['Location'] == '/lists/1/view'
     # item must exist
-    assert client.get('lists/1/items/7/edit').status_code == 404
+    assert client.get('lists/1/items/70/edit').status_code == 404
 
 
 def test_delete_item(client, auth, app):
@@ -527,7 +528,7 @@ def test_delete_item(client, auth, app):
     assert response.status_code == 302
     assert response.headers['Location'] == '/lists/1/view'
     # item must exist
-    response = client.post('lists/1/items/7/delete')
+    response = client.post('lists/1/items/70/delete')
     assert response.status_code == 404
 
 
