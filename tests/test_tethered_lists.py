@@ -161,3 +161,20 @@ def test_new_untethered_content(app, client, auth):
         assert len(untethered_content_after) == len(untethered_content_before) + 2
 
 
+def test_edit_untethered_content(client, app, auth):
+    # Get requests
+    # You have to be logged in and own the list.
+    response = client.get("/lists/5/items/7/edit")
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/auth/login"
+    auth.login("other", "other")
+    response = client.get("/lists/5/items/7/edit")
+    assert response.status_code == 403
+    auth.login()
+    response = client.get("/lists/5/items/7/edit")
+    assert response.status_code == 200
+    # The item must be related to the list
+    response = client.get("/lists/5/items/1/edit")
+    assert response.status_code == 400
+
+    

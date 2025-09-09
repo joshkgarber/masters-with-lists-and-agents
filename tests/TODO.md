@@ -46,8 +46,9 @@
             - [x] New record in untethered content
 - [ ] Edit untethered content
     - [ ] Get requests
-        - [ ] You have to be logged in
-        - [ ] You have to be the list owner
+        - [x] You have to be logged in
+        - [x] You have to be the list owner
+        - [x] The item must be related to the list
         - [ ] The master list name and description are shown
         - [ ] The master list details are shown
         - [ ] Master details from other master lists are not shown
@@ -63,6 +64,7 @@
 - [ ] Delete untethered content
 - [ ] You can't add details to a tethered list
 - [ ] You can't edit tethered items
+- [ ] You can't edit the tethered list name or description
 - [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
 
 - [ ] Write tests

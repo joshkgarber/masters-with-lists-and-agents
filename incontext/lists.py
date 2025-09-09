@@ -252,7 +252,7 @@ def edit_item(list_id, item_id):
         (list_id,)
     ).fetchone()
     if master_list_id:
-        master_list = get_master_list(list_id, False)
+        master_list = get_master_list(master_list_id["master_list_id"], False)
         alist["name"] = master_list["name"] + " (tethered)"
         alist["description"] = master_list["description"]
     item, details = get_list_item(list_id, item_id)
