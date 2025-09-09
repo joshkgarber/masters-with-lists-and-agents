@@ -5,6 +5,7 @@ description = "incontext but it's masters with lists agents."
 dependencies = [
 	"flask",
 	"pytest",
+    "coverage",
 	"gunicorn",
 ]
 

@@ -559,20 +559,6 @@ def get_list_item(list_id, item_id, check_relation=True):
             " AND u.list_id = ?",
             (item_id, list_id)
         ).fetchall()
-        retrieved_ids = [detail["id"] for detail in details]
-        placeholders = f'{"?, " * len(retrieved_ids)}'[:-2]
-        retrieved_ids.append(master_list_id["master_list_id"]) # for the sql query
-        missing_details = db.execute(
-            "SELECT md.id, md.name"
-            " FROM master_details md"
-            " JOIN master_list_detail_relations mldr"
-            " ON mldr.master_detail_id = md.id"
-            f" WHERE md.id NOT IN ({placeholders})"
-            " AND mldr.master_list_id = ?",
-            retrieved_ids
-        ).fetchall()
-        for missing_detail in missing_details:
-            details.append(dict(name=missing_detail["name"], id=missing_detail["id"], content=""))
     else:
         details = db.execute(
             'SELECT d.id, r.content, d.name'
