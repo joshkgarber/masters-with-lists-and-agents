@@ -60,12 +60,12 @@
             - [x] Updated record in items
             - [x] Updated record in untethered content
             - [x] Other untethered content not changed
-- [ ] Delete untethered content
+- [x] Delete untethered content
     - [x] You gotta be logged in and own the list
     - [x] Only this item gets deleted
     - [x] Only this untethered content gets deleted
     - [x] Only this list item relation gets deleted 
-    - [ ] Redirect to the list view
+    - [x] Redirect to the list view
 - [ ] You can't add details to a tethered list
 - [ ] You can't edit the tethered list name or description
 - [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
