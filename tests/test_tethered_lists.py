@@ -235,3 +235,30 @@ def test_edit_untethered_content(client, app, auth):
         assert response.status_code == 302
         assert response.headers["Location"] == "/lists/5/view"
 
+
+def test_delete_untethered_content(app, client, auth):
+    # User must be logged in and own the list
+    response = client.post("/lists/5/items/7/delete")
+    assert response.status_code == 302
+    assert response.headers["Location"] == "/auth/login"
+    auth.login("other", "other")
+    response = client.post("/lists/5/items/7/delete")
+    assert response.status_code == 403
+    auth.login()
+    with app.app_context():
+        db = get_db()
+        db.row_factory = dict_factory
+        items_before = db.execute('SELECT id, name FROM items').fetchall()
+        untethered_content_before = db.execute("SELECT id, content FROM untethered_content").fetchall()
+        relations_before = db.execute("SELECT list_id, item_id FROM list_item_relations").fetchall()
+        response = client.post('/lists/5/items/7/delete')
+        items_after = db.execute("SELECT id, name FROM items").fetchall()
+        untethered_content_after = db.execute("SELECT id, content FROM untethered_content").fetchall()
+        relations_after = db.execute("SELECT list_id, item_id FROM list_item_relations").fetchall()
+        # Only this item gets deleted
+        assert db.execute("SELECT id FROM items WHERE id = 7").fetchone() == None
+        assert db.execute("SELECT COUNT(id) AS count FROM items").fetchone()["count"] == len(items_before) - 1
+        # Only this untethered content gets deleted
+        
+        
+
