@@ -259,6 +259,7 @@ def test_delete_untethered_content(app, client, auth):
         assert db.execute("SELECT id FROM items WHERE id = 7").fetchone() == None
         assert db.execute("SELECT COUNT(id) AS count FROM items").fetchone()["count"] == len(items_before) - 1
         # Only this untethered content gets deleted
-        
+        assert db.execute("SELECT id FROM untethered_content WHERE item_id = 7").fetchone() == None
+        assert db.execute("SELECT COUNT(id) AS count FROM untethered_content").fetchone()["count"] == len(untethered_content_before) - 2
         
 
