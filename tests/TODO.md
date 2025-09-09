@@ -70,6 +70,8 @@
     - [x] Get request
     - [x] Post request
 - [ ] You can't edit the tethered list name or description
+    - [x] Get request
+    - [x] Post request
 - [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
 
 - [ ] Write tests

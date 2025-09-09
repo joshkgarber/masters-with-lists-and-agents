@@ -96,6 +96,8 @@ def view(list_id):
 @login_required
 def edit(list_id):
     alist = get_list(list_id)
+    if alist["tethered"]:
+        abort(403) # You can't edit a tethered list
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
@@ -113,8 +115,6 @@ def edit(list_id):
             )
             db.commit()
             return redirect(url_for('lists.index'))
-    if alist["tethered"]:
-        abort(403) # You can't edit a tethered list
     return render_template('lists/edit.html', alist=alist)
 
 

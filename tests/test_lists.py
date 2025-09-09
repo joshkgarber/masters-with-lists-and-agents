@@ -97,7 +97,7 @@ def test_view(app, client, auth):
     assert b'detail description 5' not in response.data
     assert b'detail description 6' not in response.data
     # list must exist
-    assert client.get('lists/5/view').status_code == 404
+    assert client.get('lists/50/view').status_code == 404
 
 
 def test_edit(app, client, auth):
@@ -135,7 +135,7 @@ def test_edit(app, client, auth):
     assert response.status_code == 302
     assert response.headers['Location'] == '/lists/'
     # list must exist
-    assert client.get('/lists/5/edit').status_code == 404
+    assert client.get('/lists/50/edit').status_code == 404
 
 
 def test_delete(app, client, auth):

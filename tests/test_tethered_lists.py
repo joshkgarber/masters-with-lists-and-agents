@@ -277,3 +277,12 @@ def test_new_detail(client, app, auth):
     response = client.post("/lists/5/details/new", data=data)
     assert response.status_code == 403
 
+
+def test_edit_list(app, client, auth):
+    # You can't edit a tethered list
+    auth.login()
+    response = client.get("/lists/5/edit")
+    assert response.status_code == 403
+    data = dict(name="update", description="update")
+    response = client.post("/lists/5/edit", data=data)
+    assert response.status_code == 403
