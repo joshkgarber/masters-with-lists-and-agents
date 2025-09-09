@@ -64,7 +64,7 @@
     - [x] You gotta be logged in and own the list
     - [x] Only this item gets deleted
     - [x] Only this untethered content gets deleted
-    - [ ] Only this list item relation gets deleted 
+    - [x] Only this list item relation gets deleted 
     - [ ] Redirect to the list view
 - [ ] You can't add details to a tethered list
 - [ ] You can't edit the tethered list name or description
