@@ -176,5 +176,26 @@ def test_edit_untethered_content(client, app, auth):
     # The item must be related to the list
     response = client.get("/lists/5/items/1/edit")
     assert response.status_code == 400
+    with app.app_context():
+        # The master list name and description are shown
+        response = client.get("/lists/5/items/7/edit")
+        db = get_db()
+        db.row_factory = dict_factory
+        master_list_id = db.execute("SELECT master_list_id FROM list_tethers WHERE list_id = 5").fetchone()["master_list_id"]
+        other_master_list_ids = db.execute("SELECT id FROM master_lists WHERE id != ?", (master_list_id,)).fetchall()
+        master_list = get_master_list(master_list_id, False)
+        assert master_list["name"].encode() in response.data
+        assert master_list["description"].encode() in response.data
+        # The master list details are shown
+        master_details = master_list["master_details"]
+        for master_detail in master_details:
+            assert master_detail["name"].encode() in response.data
+        # Master details from other master lists are not shown.
+        for other_master_list_id in other_master_list_ids:
+            other_master_list = get_master_list(other_master_list_id["id"], False)
+            other_master_details = other_master_list["master_details"]
+            for other_master_detail in other_master_details:
+                assert other_master_detail["name"].encode() not in response.data
+
 
     

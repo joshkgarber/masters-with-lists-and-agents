@@ -45,13 +45,13 @@
             - [x] New record in items
             - [x] New record in untethered content
 - [ ] Edit untethered content
-    - [ ] Get requests
+    - [x] Get requests
         - [x] You have to be logged in
         - [x] You have to be the list owner
         - [x] The item must be related to the list
-        - [ ] The master list name and description are shown
-        - [ ] The master list details are shown
-        - [ ] Master details from other master lists are not shown
+        - [x] The master list name and description are shown
+        - [x] The master list details are shown
+        - [x] Master details from other master lists are not shown
     - [ ] Post requests
         - [ ] You gotta be logged in
         - [ ] You gotta own the list
