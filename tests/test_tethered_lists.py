@@ -268,3 +268,12 @@ def test_delete_untethered_content(app, client, auth):
         assert response.headers["Location"] == "/lists/5/view"
         
 
+def test_new_detail(client, app, auth):
+    # You can't add details to a tethered list
+    auth.login()
+    response = client.get("/lists/5/details/new")
+    assert response.status_code == 403
+    data = dict(name="name", description="description")
+    response = client.post("/lists/5/details/new", data=data)
+    assert response.status_code == 403
+

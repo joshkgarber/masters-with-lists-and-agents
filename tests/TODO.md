@@ -66,7 +66,9 @@
     - [x] Only this untethered content gets deleted
     - [x] Only this list item relation gets deleted 
     - [x] Redirect to the list view
-- [ ] You can't add details to a tethered list
+- [x] You can't add details to a tethered list
+    - [x] Get request
+    - [x] Post request
 - [ ] You can't edit the tethered list name or description
 - [ ] The test data is being inserted correctly (i.e. it complements the tests usefully.) (this is a review to make sure the tests are valid.)
 
