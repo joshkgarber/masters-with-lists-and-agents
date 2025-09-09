@@ -74,4 +74,4 @@
     - [x] Post request
 
 - [x] Write tests
-- [ ] Check coverage
+- [x] Check coverage
