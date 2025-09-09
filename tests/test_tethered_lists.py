@@ -264,5 +264,7 @@ def test_delete_untethered_content(app, client, auth):
         # Only this list item relation gets deleted
         assert db.execute("SELECT id FROM list_item_relations WHERE item_id = 7").fetchone() == None
         assert db.execute("SELECT COUNT(id) AS count FROM list_item_relations").fetchone()["count"] == len(relations_before) - 1
+        assert response.status_code == 302
+        assert response.headers["Location"] == "/lists/5/view"
         
 
